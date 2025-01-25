@@ -18,6 +18,7 @@ This is a sample app about [Amazon Bedrock](https://aws.amazon.com/bedrock/).
 1. Construct the knowledge base and the agent.
 
 ```bash
+terraform -chdir=terraform init
 terraform -chdir=terraform apply
 ```
 
