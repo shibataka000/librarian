@@ -4,11 +4,14 @@ on:
 jobs:
   tflint:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./terraform
     steps:
       - uses: actions/checkout@v4
       - uses: terraform-linters/setup-tflint@v4
-      - run: tflint --recursive --version
-      - run: tflint --recursive --init
+      - run: tflint --version
+      - run: tflint --init
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      - run: tflint --recursive -f compact
+      - run: tflint -f compact
