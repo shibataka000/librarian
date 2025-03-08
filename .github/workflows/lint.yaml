@@ -1,0 +1,14 @@
+name: Lint
+on:
+  push:
+jobs:
+  tflint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: terraform-linters/setup-tflint@v4
+      - run: tflint --recursive --version
+      - run: tflint --recursive --init
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - run: tflint --recursive -f compact
