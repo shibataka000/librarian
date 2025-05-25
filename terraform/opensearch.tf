@@ -96,7 +96,7 @@ resource "opensearch_index" "default" {
   mappings = jsonencode(
     {
       "properties" : {
-        local.aoss_vector_field_name : {
+        "${local.aoss_vector_field_name}" : {
           "type" : "knn_vector",
           "dimension" : var.bedrock_knowledge_base_dimension,
           "method" : {
@@ -109,11 +109,11 @@ resource "opensearch_index" "default" {
             "space_type" : "l2"
           }
         },
-        local.aoss_metadata_field_name : {
+        "${local.aoss_metadata_field_name}" : {
           "type" : "text",
           "index" : "false"
         },
-        local.aoss_text_field_name : {
+        "${local.aoss_text_field_name}" : {
           "type" : "text",
           "index" : "true"
         }
