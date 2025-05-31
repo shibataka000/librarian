@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/shibataka000/librarian/internal/aws/bedrock"
 	"github.com/spf13/cobra"
@@ -25,11 +26,15 @@ func main() {
 			if err != nil {
 				return err
 			}
-			response, err := client.InvokeAgent(cmd.Context(), agentID, "Hi!")
+			prompt, err := os.ReadFile(args[0])
 			if err != nil {
 				return err
 			}
-			fmt.Println(response)
+			response, err := client.InvokeAgent(cmd.Context(), agentID, string(prompt))
+			if err != nil {
+				return err
+			}
+			fmt.Println(string(response))
 			return nil
 		},
 		SilenceUsage: true,

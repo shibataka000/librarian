@@ -29,7 +29,8 @@ func NewClient(ctx context.Context) (*Client, error) {
 		return nil, err
 	}
 	return &Client{
-		agent: bedrockagent.NewFromConfig(cfg),
+		agent:        bedrockagent.NewFromConfig(cfg),
+		agentruntime: bedrockagentruntime.NewFromConfig(cfg),
 	}, nil
 }
 
@@ -66,10 +67,10 @@ func (c *Client) Ingest(ctx context.Context, knowledgeBaseID string, dataSourceI
 	}
 }
 
-func (c *Client) InvokeAgent(ctx context.Context, agentID, inputText string) (string, error) {
+func (c *Client) InvokeAgent(ctx context.Context, agentID string, inputText string) ([]byte, error) {
 	sessionID, err := newSessionID()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	output, err := c.agentruntime.InvokeAgent(ctx, &bedrockagentruntime.InvokeAgentInput{
 		AgentAliasId: aws.String(agentAliasID),
@@ -79,7 +80,7 @@ func (c *Client) InvokeAgent(ctx context.Context, agentID, inputText string) (st
 		InputText:    aws.String(inputText),
 	})
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	response := []byte{}
 	stream := output.GetStream()
@@ -88,7 +89,7 @@ func (c *Client) InvokeAgent(ctx context.Context, agentID, inputText string) (st
 			response = append(response, chunk.Value.Bytes...)
 		}
 	}
-	return string(response), stream.Close()
+	return response, stream.Close()
 }
 
 func newSessionID() (string, error) {
