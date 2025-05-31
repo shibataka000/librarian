@@ -2,7 +2,7 @@
 
 ## What's the librarian?
 
-The librarian is a question answering agent. The user will provide it with a question about contents in e-books in knowledge base. Its job is to answer the user's question by referring content in e-books in knowledge base.
+The librarian is a question answering agent. The user will provide it with a question about contents in knowledge base. Its job is to answer the user's question by referring content in knowledge base.
 
 This is a sample app about [Amazon Bedrock](https://aws.amazon.com/bedrock/).
 
