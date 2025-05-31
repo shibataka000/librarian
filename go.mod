@@ -29,6 +29,6 @@ require (
 )
 
 tool (
-	github.com/shibataka000/librarian/cmd/startingestionjob
+	github.com/shibataka000/librarian/cmd/ingest
 	github.com/shibataka000/librarian/cmd/invokeagent
 )
