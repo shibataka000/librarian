@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/shibataka000/librarian/internal/aws/bedrock"
@@ -14,8 +13,6 @@ func main() {
 	var (
 		agentID string
 	)
-
-	log.SetFlags(0)
 
 	command := &cobra.Command{
 		Use:   "invokeagent",
@@ -44,11 +41,11 @@ func main() {
 
 	for _, flag := range []string{"agent-id"} {
 		if err := command.MarkFlagRequired(flag); err != nil {
-			log.Fatal(err)
+			panic(err)
 		}
 	}
 
-	if err := command.ExecuteContext(context.Background()); err != nil {
-		log.Fatal(err)
+	if command.ExecuteContext(context.Background()) != nil {
+		os.Exit(1)
 	}
 }
