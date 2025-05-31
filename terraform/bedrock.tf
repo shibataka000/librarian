@@ -2,7 +2,7 @@ resource "aws_bedrockagent_agent" "librarian" {
   agent_name              = "librarian"
   agent_resource_role_arn = aws_iam_role.bedrock_agent.arn
   foundation_model        = data.aws_bedrock_foundation_model.agent.id
-  instruction             = "You are a question answering agent. The user will provide you with a question about contents in e-books in knowledge base. Your job is to answer the user's question by referring content in e-books in knowledge base."
+  instruction             = "You are a question answering agent. The user will provide you with a question about contents in knowledge base. Your job is to answer the user's question by referring content in knowledge base."
 }
 
 resource "aws_bedrockagent_agent_knowledge_base_association" "library" {
