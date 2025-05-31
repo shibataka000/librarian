@@ -15,7 +15,7 @@ clean:
 .PHONY: sync
 sync:
 	aws s3 sync ./books s3://$(shell terraform -chdir=terraform output -raw bedrock_data_source_s3_bucket_name)
-	go tool ingest --knowledge-base-id "$(shell terraform -chdir=terraform output -raw bedrock_konowledge_base_id)" --data-source-id "$(shell terraform -chdir=terraform output -raw bedrock_data_source_id)"
+	go tool ingest --knowledge-base-id "$(shell terraform -chdir=terraform output -raw bedrock_knowledge_base_id)" --data-source-id "$(shell terraform -chdir=terraform output -raw bedrock_data_source_id)"
 
 .PHONY: invoke-agent
 invoke-agent:

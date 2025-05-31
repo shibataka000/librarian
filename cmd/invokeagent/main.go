@@ -19,12 +19,13 @@ func main() {
 	command := &cobra.Command{
 		Use:   "invokeagent",
 		Short: "Sends a prompt for the agent to process and respond to.",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := bedrock.NewClient(cmd.Context())
 			if err != nil {
 				return err
 			}
-			response, err := client.InvokeAgent(cmd.Context(), agentID, "")
+			response, err := client.InvokeAgent(cmd.Context(), agentID, "Hi!")
 			if err != nil {
 				return err
 			}
