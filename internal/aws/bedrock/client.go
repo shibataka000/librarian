@@ -8,11 +8,19 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/bedrockagent"
-	"github.com/aws/aws-sdk-go-v2/service/bedrockagent/types"
+	agenttypes "github.com/aws/aws-sdk-go-v2/service/bedrockagent/types"
+	"github.com/aws/aws-sdk-go-v2/service/bedrockagentruntime"
+	agentruntimetypes "github.com/aws/aws-sdk-go-v2/service/bedrockagentruntime/types"
+	"github.com/google/uuid"
+)
+
+const (
+	agentAliasID = "TSTALIASID"
 )
 
 type Client struct {
-	bedrockagent *bedrockagent.Client
+	agent        *bedrockagent.Client
+	agentruntime *bedrockagentruntime.Client
 }
 
 func NewClient(ctx context.Context) (*Client, error) {
@@ -21,13 +29,13 @@ func NewClient(ctx context.Context) (*Client, error) {
 		return nil, err
 	}
 	return &Client{
-		bedrockagent: bedrockagent.NewFromConfig(cfg),
+		agent: bedrockagent.NewFromConfig(cfg),
 	}, nil
 }
 
 func (c *Client) Ingest(ctx context.Context, knowledgeBaseID string, dataSourceID string) error {
 	// Start the ingestion job.
-	startIngestionJobOutput, err := c.bedrockagent.StartIngestionJob(ctx, &bedrockagent.StartIngestionJobInput{
+	startIngestionJobOutput, err := c.agent.StartIngestionJob(ctx, &bedrockagent.StartIngestionJobInput{
 		DataSourceId:    aws.String(dataSourceID),
 		KnowledgeBaseId: aws.String(knowledgeBaseID),
 	})
@@ -37,7 +45,7 @@ func (c *Client) Ingest(ctx context.Context, knowledgeBaseID string, dataSourceI
 
 	// Wait for the ingestion job to complete.
 	for {
-		getIngestionJobOutput, err := c.bedrockagent.GetIngestionJob(ctx, &bedrockagent.GetIngestionJobInput{
+		getIngestionJobOutput, err := c.agent.GetIngestionJob(ctx, &bedrockagent.GetIngestionJobInput{
 			DataSourceId:    startIngestionJobOutput.IngestionJob.DataSourceId,
 			IngestionJobId:  startIngestionJobOutput.IngestionJob.IngestionJobId,
 			KnowledgeBaseId: startIngestionJobOutput.IngestionJob.KnowledgeBaseId,
@@ -46,14 +54,47 @@ func (c *Client) Ingest(ctx context.Context, knowledgeBaseID string, dataSourceI
 			return err
 		}
 		switch getIngestionJobOutput.IngestionJob.Status {
-		case types.IngestionJobStatusComplete:
+		case agenttypes.IngestionJobStatusComplete:
 			return nil
-		case types.IngestionJobStatusFailed:
+		case agenttypes.IngestionJobStatusFailed:
 			return errors.New("ingestion job failed")
-		case types.IngestionJobStatusStopped:
+		case agenttypes.IngestionJobStatusStopped:
 			return errors.New("ingestion job stopped")
 		default:
 			time.Sleep(10 * time.Second)
 		}
 	}
+}
+
+func (c *Client) InvokeAgent(ctx context.Context, agentID, inputText string) (string, error) {
+	sessionID, err := newSessionID()
+	if err != nil {
+		return "", err
+	}
+	output, err := c.agentruntime.InvokeAgent(ctx, &bedrockagentruntime.InvokeAgentInput{
+		AgentAliasId: aws.String(agentAliasID),
+		AgentId:      aws.String(agentID),
+		SessionId:    aws.String(sessionID),
+		EnableTrace:  aws.Bool(true),
+		InputText:    aws.String(inputText),
+	})
+	if err != nil {
+		return "", err
+	}
+	response := []byte{}
+	stream := output.GetStream()
+	for event := range stream.Events() {
+		if chunk, ok := event.(*agentruntimetypes.ResponseStreamMemberChunk); ok {
+			response = append(response, chunk.Value.Bytes...)
+		}
+	}
+	return string(response), stream.Close()
+}
+
+func newSessionID() (string, error) {
+	uuid, err := uuid.NewRandom()
+	if err != nil {
+		return "", err
+	}
+	return uuid.String(), nil
 }

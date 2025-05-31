@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"os"
+	"log"
 
 	"github.com/shibataka000/librarian/internal/aws/bedrock"
 	"github.com/spf13/cobra"
@@ -13,6 +13,8 @@ func main() {
 		knowledgeBaseID string
 		dataSourceID    string
 	)
+
+	log.SetFlags(0)
 
 	command := &cobra.Command{
 		Use:   "ingest",
@@ -32,11 +34,11 @@ func main() {
 
 	for _, flag := range []string{"knowledge-base-id", "data-source-id"} {
 		if err := command.MarkFlagRequired(flag); err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 	}
 
-	if command.ExecuteContext(context.Background()) != nil {
-		os.Exit(1)
+	if err := command.ExecuteContext(context.Background()); err != nil {
+		log.Fatal(err)
 	}
 }
