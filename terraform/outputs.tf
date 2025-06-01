@@ -1,4 +1,9 @@
-output "bedrock_konowledge_base_id" {
+output "bedrock_agent_id" {
+  value       = aws_bedrockagent_agent.librarian.id
+  description = "The agent ID."
+}
+
+output "bedrock_knowledge_base_id" {
   value       = aws_bedrockagent_knowledge_base.library.id
   description = "The knowledge base ID."
 }
