@@ -1,6 +1,22 @@
-.DEFAULT_GOAL := sync
+.DEFAULT_GOAL := test
 
-.PHONY: sync
-sync:
+.PHONY: lint
+lint:
+	golangci-lint run
+
+.PHONY: test
+test:
+	go test ./...
+
+.PHONY: clean
+clean:
+	go clean -testcache
+
+.PHONY: ingest
+ingest:
 	aws s3 sync ./books s3://$(shell terraform -chdir=terraform output -raw bedrock_data_source_s3_bucket_name)
-	aws bedrock-agent start-ingestion-job --knowledge-base-id "$(shell terraform -chdir=terraform output -raw bedrock_konowledge_base_id)" --data-source-id "$(shell terraform -chdir=terraform output -raw bedrock_data_source_id)"
+	go tool ingest --knowledge-base-id "$(shell terraform -chdir=terraform output -raw bedrock_knowledge_base_id)" --data-source-id "$(shell terraform -chdir=terraform output -raw bedrock_data_source_id)"
+
+.PHONY: invoke-agent
+invoke-agent:
+	go tool invokeagent --agent-id "$(shell terraform -chdir=terraform output -raw bedrock_agent_id)" prompt.txt

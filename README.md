@@ -26,19 +26,16 @@ terraform -chdir=terraform apply
 3. Send e-books to the knowledge base.
 
 ```bash
-make sync
-```
-
-3. Build the CLI tool.
-
-```bash
-go install -C cli
+make ingest
 ```
 
 ## Usage
 
+1. Write [prompt.txt](./prompt.txt).
+2. Invoke agent.
+
 ```bash
-librarian <question>
+make invoke-agent
 ```
 
 ## Clean up

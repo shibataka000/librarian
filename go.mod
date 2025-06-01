@@ -1,6 +1,6 @@
 module github.com/shibataka000/librarian
 
-go 1.23.4
+go 1.24.0
 
 require (
 	github.com/aws/aws-sdk-go-v2 v1.34.0
@@ -26,4 +26,9 @@ require (
 	github.com/aws/smithy-go v1.22.2 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
+)
+
+tool (
+	github.com/shibataka000/librarian/cmd/ingest
+	github.com/shibataka000/librarian/cmd/invokeagent
 )
