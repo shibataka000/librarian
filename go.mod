@@ -3,7 +3,7 @@ module github.com/shibataka000/librarian
 go 1.24.0
 
 require (
-	github.com/aws/aws-sdk-go-v2 v1.34.0
+	github.com/aws/aws-sdk-go-v2 v1.36.3
 	github.com/aws/aws-sdk-go-v2/config v1.28.10
 	github.com/aws/aws-sdk-go-v2/service/bedrockagent v1.33.4
 	github.com/aws/aws-sdk-go-v2/service/bedrockagentruntime v1.31.1
