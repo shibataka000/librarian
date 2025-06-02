@@ -6,13 +6,13 @@ require (
 	github.com/aws/aws-sdk-go-v2 v1.36.3
 	github.com/aws/aws-sdk-go-v2/config v1.29.14
 	github.com/aws/aws-sdk-go-v2/service/bedrockagent v1.43.0
-	github.com/aws/aws-sdk-go-v2/service/bedrockagentruntime v1.31.1
+	github.com/aws/aws-sdk-go-v2/service/bedrockagentruntime v1.44.0
 	github.com/google/uuid v1.6.0
 	github.com/spf13/cobra v1.9.1
 )
 
 require (
-	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.6.7 // indirect
+	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.6.10 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.17.67 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.16.30 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.3.34 // indirect
