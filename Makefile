@@ -1,4 +1,8 @@
-.DEFAULT_GOAL := test
+.DEFAULT_GOAL := help
+
+.PHONY: help
+help:
+	@cat README.md
 
 .PHONY: lint
 lint:
